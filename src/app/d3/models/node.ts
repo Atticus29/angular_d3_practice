@@ -9,7 +9,6 @@ export class Node implements d3.SimulationNodeDatum { //should this be extends?
 
   id: string;
   constructor(id){
-    // super();
     this.id = id;
   }
 

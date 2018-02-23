@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, ChangeDetectorRef, ChangeDetectionStrategy, Input } from '@angular/core';
 import { D3Service } from '../../d3/d3.service';
 import { ForceDirectedGraph } from '../../d3/models/force-directed-graph';
 import { Node } from '../../d3/models/node';
 
 @Component ({
   selector: 'graph',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <svg #svg [attr.width]="_options.width" [attr.height]="_options.height">
       <g>
@@ -22,10 +23,14 @@ export class GraphComponent {
 
   graph: ForceDirectedGraph;
 
-  constructor(private d3Service: D3Service){}
+  constructor(private d3Service: D3Service, private ref: ChangeDetectorRef){}
 
   ngOnInit(){
     this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, this.options);
+
+    this.graph.ticker.subscribe((d) => {
+      this.ref.markForCheck();
+    });
   }
 
   ngAfterViewInit(){
